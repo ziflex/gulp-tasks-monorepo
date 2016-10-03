@@ -1,2 +1,2 @@
-# monorepo-cli
-Gulp based CLI for managing mono repo
+# monorepo-toolkit
+Gulp based toolkit for managing mono repository
