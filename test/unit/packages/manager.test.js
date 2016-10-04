@@ -52,14 +52,13 @@ describe('Packages. Manager', () => {
         context('When package exists', () => {
             it('should return metadata', (done) => {
                 const location = path.resolve(__dirname, '../../fixtures/packages/package1/');
-                const pattern = 'package.js';
 
                 defaultInstance
                     .get(location)
                     .then((meta) => {
                         expect(meta).to.exist;
                         expect(meta.name(), 'name').to.equal('package1');
-                        expect(meta.location(), 'location').to.equal(path.join(location, pattern));
+                        expect(meta.location(), 'location').to.equal(location);
                         expect(meta.options('test')).to.be.true;
 
                         done();
@@ -79,7 +78,7 @@ describe('Packages. Manager', () => {
                         .then((meta) => {
                             expect(meta).to.exist;
                             expect(meta.name(), 'name').to.equal('package1');
-                            expect(meta.location(), 'location').to.equal(path.join(location, pattern));
+                            expect(meta.location(), 'location').to.equal(location);
                             expect(meta.options('test.custom')).to.be.true;
 
                             done();
@@ -118,7 +117,7 @@ describe('Packages. Manager', () => {
                             .then((meta) => {
                                 expect(meta).to.exist;
                                 expect(meta.name(), 'name').to.equal('package1');
-                                expect(meta.location(), 'location').to.equal(path.join(location, pattern));
+                                expect(meta.location(), 'location').to.equal(location);
                                 expect(meta.options('test.async')).to.be.true;
 
                                 done();
@@ -136,7 +135,7 @@ describe('Packages. Manager', () => {
                     .then(() => {
                         done(new Error('Expected to reject promise'));
                     }).catch((reason) => {
-                        expect(reason.code).to.eql('MODULE_NOT_FOUND');
+                        expect(reason.code).to.eql('ENOENT');
                         done();
                     });
             });

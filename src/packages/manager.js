@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 import Symbol from 'es6-symbol';
 import Promise from 'bluebird';
+import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
 import _ from 'lodash';
@@ -30,37 +31,63 @@ class PackageManager {
     get(location) {
         return Promise.try(() => {
             const fileLocation = path.join(location, this[FIELDS.pattern]);
-            const module = require(fileLocation);
-            const pkg = Package({
-                name: path.basename(path.dirname(fileLocation)),
-                location: fileLocation
-            });
 
-            let initializer = null;
+            return Promise
+                .fromCallback(done => fs.lstat(location, done))
+                .then(() => {
+                    return Promise
+                        .fromCallback(done => fs.lstat(fileLocation, done))
+                        .then((stats) => {
+                            return stats.isFile();
+                        })
+                        .catch((reason) => {
+                            if (reason.code === 'ENOENT') {
+                                return Promise.resolve(false);
+                            }
 
-            if (_.isFunction(module)) {
-                initializer = module;
-            } else if (_.isFunction(module.default)) {
-                initializer = module.default;
-            }
+                            return Promise.reject(reason);
+                        });
+                })
+                .then((exists) => {
+                    let module = null;
+                    let initializer = null;
+                    const pkg = Package({
+                        name: path.basename(location),
+                        location
+                    });
 
-            if (!_.isFunction(initializer)) {
-                // this package does not have initializer
-                const err = new Error('Initialization file must export function');
-                err.code = INITIALIZER_NOT_FOUND_CODE;
-                return Promise.reject(err);
-            }
+                    if (exists) {
+                        module = require(fileLocation);
+                    }
 
-            // async initializer
-            if (initializer.length === 2) {
-                return Promise
-                    .fromCallback(done => initializer(pkg, done))
-                    .then(() => pkg);
-            }
+                    // initializer not defined
+                    if (_.isNil(module)) {
+                        return pkg;
+                    }
 
-            initializer(pkg);
+                    if (_.isFunction(module)) {
+                        initializer = module;
+                    } else if (_.isFunction(module.default)) {
+                        initializer = module.default;
+                    }
 
-            return pkg;
+                    if (!_.isFunction(initializer)) {
+                        const err = new Error('Initialization file must export function');
+                        err.code = INITIALIZER_NOT_FOUND_CODE;
+                        return Promise.reject(err);
+                    }
+
+                    // async initializer
+                    if (initializer.length === 2) {
+                        return Promise
+                            .fromCallback(done => initializer(pkg, done))
+                            .then(() => pkg);
+                    }
+
+                    initializer(pkg);
+
+                    return pkg;
+                });
         });
     }
 
