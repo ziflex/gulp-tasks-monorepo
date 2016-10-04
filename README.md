@@ -4,6 +4,10 @@
 
 Tool for running gulp tasks against multiple packages
 
+
+[![npm version](https://badge.fury.io/js/gulp-tasks-monorepo.svg)](https://www.npmjs.com/package/gulp-tasks-monorepo)
+[![Build Status](https://secure.travis-ci.org/ziflex/gulp-tasks-monorepo.svg?branch=master)](http://travis-ci.org/ziflex/gulp-tasks-monorepo)
+
 ## Motivation
 
 Basic idea of the package is reusing gulp tasks for multiple projects that have similar build pipelines.
