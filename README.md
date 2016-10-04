@@ -68,7 +68,7 @@ As we can see, pretty much the same as with regular vanilla gulp, but with one e
 
 ### Metadata
 
-Of course, in real world, our build tasks are more complicated and we need to give some more information to these build tasks in order to let them know how to handle each package more .
+Of course, in real world, our build tasks are more complicated and we need to give some more information to these tasks in order to let them know how to handle each package more precisely .
 In order to do that, we can create ``package.js`` in a root directory of each package that should export one single function which accepts a package metadata:
 
 ````javascript
@@ -80,7 +80,7 @@ In order to do that, we can create ``package.js`` in a root directory of each pa
 ````
 
 The package will load this module and run initializer before running any tasks.
-After that, any task can get this information:
+After that, any task can get the information:
 
 ````javascript
 
@@ -130,7 +130,7 @@ Metadata initializer also can be async:
 ### Bonus
 
 As a bonus, we can drastically minimize amount of code and organize it better.
-We can use ``gulp-tasks-registrator`` for loading external gulp tasks:
+We can use [``gulp-tasks-registrator``](https://github.com/ziflex/gulp-tasks-registrator) for loading external gulp tasks:
 
 ````javascript
 
