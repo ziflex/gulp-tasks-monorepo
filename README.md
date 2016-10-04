@@ -7,6 +7,8 @@ Tool for running gulp tasks against multiple packages
 
 [![npm version](https://badge.fury.io/js/gulp-tasks-monorepo.svg)](https://www.npmjs.com/package/gulp-tasks-monorepo)
 [![Build Status](https://secure.travis-ci.org/ziflex/gulp-tasks-monorepo.svg?branch=master)](http://travis-ci.org/ziflex/gulp-tasks-monorepo)
+[![Coverage Status](https://coveralls.io/repos/github/ziflex/gulp-tasks-monorepo/badge.svg?branch=master)](https://coveralls.io/github/ziflex/gulp-tasks-monorepo)
+
 
 ## Motivation
 
