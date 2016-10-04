@@ -15,7 +15,10 @@ class Manager {
         const options = getOptions(...args);
 
         this[FIELDS.logger] = Logger();
-        this[FIELDS.packages] = PackageManager(options.packages);
+        this[FIELDS.packages] = PackageManager(
+            this[FIELDS.logger],
+            options.packages
+        );
         this[FIELDS.tasks] = TaskManager(
             this[FIELDS.logger],
             this[FIELDS.packages],

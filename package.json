@@ -1,18 +1,18 @@
 {
-  "name": "monorepo-toolkit",
+  "name": "gulp-tasks-monorepo",
   "version": "0.1.0",
-  "description": "Gulp based toolkit for managing mono repo",
+  "description": "Tool for running gulp tasks against multiple packages",
   "main": "lib/index.js",
   "scripts": {
     "lint": "eslint -c ./.eslintrc.json src",
     "test": "npm run lint && mocha --reporter spec --require babel-register --recursive test",
     "clean": "rimraf lib",
     "build": "npm run test && npm run clean && babel src --out-dir lib",
-    "prepublish": "npm run test && npm run build"
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ziflex/monorepo-toolkit.git"
+    "url": "git+https://github.com/ziflex/gulp-tasks-monorepo.git"
   },
   "keywords": [
     "gulp",
@@ -22,9 +22,9 @@
   "author": "Tim Voronov <ziflex@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ziflex/monorepo-toolkit/issues"
+    "url": "https://github.com/ziflex/gulp-tasks-monorepo/issues"
   },
-  "homepage": "https://github.com/ziflex/monorepo-toolkit#readme",
+  "homepage": "https://github.com/ziflex/gulp-tasks-monorepo#readme",
   "dependencies": {
     "bluebird": "^3.4.6",
     "end-of-stream": "^1.1.0",

@@ -3,7 +3,8 @@ import Symbol from 'es6-symbol';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import Pipeline from 'piperline';
-import Task from './task';
+import Runner from './runner';
+import required from '../utils/required';
 
 const FIELDS = {
     logger: Symbol('logger'),
@@ -39,11 +40,31 @@ function getTargetName(options) {
         return target;
     }
 
-    if (_.isString(target)) {
-        return _.map(target.split(','), i => _.trim(i));
+    if (_.isString(target) && !_.isEmpty(target)) {
+        const arr = target.split(',');
+
+        if (arr.length > 1) {
+            return _.map(arr, i => _.trim(i));
+        }
+
+        return _.trim(_.first(arr));
     }
 
     return null;
+}
+
+function parseArgs(args) {
+    const [name, dependencies, handler] = args;
+    const result = { name, dependencies: null, handler: null };
+
+    if (_.isArray(dependencies)) {
+        result.dependencies = dependencies;
+        result.handler = handler;
+    } else if (_.isFunction(dependencies)) {
+        result.handler = dependencies;
+    }
+
+    return result;
 }
 
 function runPipeline(pipes) {
@@ -56,26 +77,33 @@ class TasksManager {
         this[FIELDS.packages] = packages;
         this[FIELDS.engine] = getEngine(options);
         this[FIELDS.target] = getTargetName(options);
+
+        required(this[FIELDS.logger], 'Logger');
+        required(this[FIELDS.packages], 'Package Manager');
+        required(this[FIELDS.engine], 'Gulp');
     }
 
-    task(name, ...args) {
-        let deps = null;
-        let handler = null;
+    add(...args) {
+        const { name, dependencies, handler } = parseArgs(args);
 
-        if (args.length === 2) {
-            [deps, handler] = args;
-        } else if (args.length === 1) {
-            [handler] = args;
+        // looks like it's grouping task
+        if (_.isNil(handler)) {
+            // if it has dependencies, register
+            if (!_.isEmpty(dependencies)) {
+                this[FIELDS.engine].task(name, dependencies);
+            }
+
+            return;
         }
 
         const logger = this[FIELDS.logger];
         const criteria = this[FIELDS.target];
-        const task = Task(logger, deps, handler);
+        const task = Runner(logger, dependencies, handler);
 
         this[FIELDS.engine].task(name, (complete) => {
             this[FIELDS.packages].find(criteria).then((foundPackages) => {
                 const pipes = _.map(foundPackages, (pkg) => {
-                    return (data, next, done) => {
+                    return (ignore, next, done) => {
                         task(pkg, next, done);
                     };
                 });

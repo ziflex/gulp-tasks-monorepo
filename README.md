@@ -1,2 +1,5 @@
-# monorepo-toolkit
-Gulp based toolkit for managing mono repository
+# gulp-tasks-monorepo
+
+> Write once, apply for all
+
+Tool for running gulp tasks against multiple packages

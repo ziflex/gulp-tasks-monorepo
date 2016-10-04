@@ -16,7 +16,7 @@ function complete(logger, pkg, done, err) {
 }
 
 function execute(logger, pkg, task, done) {
-    const finish = _.partial(complete, logger, pkg, done);
+    const finish = _.once(_.partial(complete, logger, pkg, done));
     let out = null;
 
     try {
@@ -49,7 +49,7 @@ export default function create(logger, deps, handler) {
     required(handler, 'handler');
     assert(_.isFunction(handler), 'Task handler must be a function');
 
-    return function runner(pkg, next, done) {
+    return function taskRunner(pkg, next, done) {
         if (_.isNil(pkg)) {
             return next();
         }
