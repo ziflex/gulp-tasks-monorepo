@@ -29,7 +29,7 @@ function getEngine(options) {
     return engine;
 }
 
-function getTargetName(options) {
+function getTargetPackageName(options) {
     const target = _.get(options, 'package');
 
     if (_.isNil(target)) {
@@ -76,7 +76,7 @@ class TasksManager {
         this[FIELDS.logger] = logger;
         this[FIELDS.packages] = packages;
         this[FIELDS.engine] = getEngine(options);
-        this[FIELDS.target] = getTargetName(options);
+        this[FIELDS.target] = getTargetPackageName(options);
 
         required(this[FIELDS.logger], 'Logger');
         required(this[FIELDS.packages], 'Package Manager');

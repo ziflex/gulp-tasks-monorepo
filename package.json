@@ -1,6 +1,6 @@
 {
   "name": "gulp-tasks-monorepo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tool for running gulp tasks against multiple packages",
   "main": "lib/index.js",
   "scripts": {

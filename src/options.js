@@ -9,7 +9,7 @@ export default function getOptions(params) {
         },
         tasks: {
             gulp: _.get(params, 'gulp', null),
-            target: _.get(params, 'package', null)
+            package: _.get(params, 'package', null)
         }
     };
 
