@@ -89,17 +89,16 @@ class TasksManager {
 
         // if it has dependencies, register as a separate task
         if (!_.isEmpty(dependencies)) {
-            // if it's needed to be executed async
-            if (dependencies.async) {
-                this[FIELDS.engine].task(name, dependencies);
-            } else {
+            if (!dependencies.parallel) {
                 this[FIELDS.engine].task(name, (done) => {
                     runSequence(...dependencies, done);
                 });
+            } else {
+                this[FIELDS.engine].task(name, dependencies);
             }
         }
 
-        // looks like it's grouping task
+        // looks like it's a grouping task
         if (_.isNil(handler)) {
             return;
         }

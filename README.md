@@ -15,7 +15,7 @@ Tool for running gulp tasks against multiple packages
 Basic idea of the package is reusing gulp tasks for multiple projects that have similar build pipelines.
 Package iterates over a given folder with packages and run gulp tasks against each package.
 In its turn, each gulp task receives a current package metadata that contains some information about the package which can be extended via package initializers (they are covered below).    
-*Note: all dependencies are bieng executed in sync mode by default. In order to run them asynchronously, array with dependencies must have ``async=true`` property*
+*Note: all dependencies are bieng executed in sequentially by default. In order to run them in parallel, array with dependencies must have ``parallel=true`` property*
 
 ## Usage
 ### Quick start
