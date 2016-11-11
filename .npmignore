@@ -25,3 +25,11 @@ classes/
 dump.rdb
 src
 test
+
+.babelrc
+.editorconfig
+.eslintignore
+.eslintrc.json
+.istanbul.yml
+.travis.yml
+.gitignore

@@ -32,6 +32,6 @@ class Manager {
     }
 }
 
-export default function create(...args) {
+module.exports = function create(...args) {
     return new Manager(...args);
-}
+};

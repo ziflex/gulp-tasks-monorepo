@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-expressions, import/no-extraneous-dependencies */
+/* eslint-disable global-require, no-unused-expressions, import/no-extraneous-dependencies */
 import { expect } from 'chai';
 import sinon from 'sinon';
 import path from 'path';
@@ -57,5 +57,11 @@ describe('Index', () => {
         gulp.getTasks()[0].func((err) => {
             done(err);
         });
+    });
+
+    it('should be exported as "commonjs" module', () => {
+        const Monorepo = require('../../src/index');
+
+        expect(typeof Monorepo === 'function').to.be.true;
     });
 });
