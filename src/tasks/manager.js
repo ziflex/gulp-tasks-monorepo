@@ -80,14 +80,9 @@ function buildPackages(logger, packageManager, criteria, task, complete) {
             };
         });
 
-        return runPipeline(pipes).then(() => {
-            complete();
-            logger.success('Task succeeded');
-        }).catch((reason) => {
-            complete(reason);
-
-            logger.error('Task failed');
-        });
+        return runPipeline(pipes)
+            .then(() => complete())
+            .catch(complete);
     }).catch((err) => {
         logger.error('Could not find packages');
         logger.error(err.stack);
