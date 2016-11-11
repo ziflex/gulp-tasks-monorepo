@@ -3,6 +3,7 @@ import Symbol from 'es6-symbol';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import Pipeline from 'piperline';
+import runSequence from 'run-sequence';
 import Runner from './runner';
 import required from '../utils/required';
 
@@ -86,19 +87,26 @@ class TasksManager {
     add(...args) {
         const { name, dependencies, handler } = parseArgs(args);
 
+        // if it has dependencies, register as a separate task
+        if (!_.isEmpty(dependencies)) {
+            // if it's needed to be executed async
+            if (dependencies.async) {
+                this[FIELDS.engine].task(name, dependencies);
+            } else {
+                this[FIELDS.engine].task(name, (done) => {
+                    runSequence(...dependencies, done);
+                });
+            }
+        }
+
         // looks like it's grouping task
         if (_.isNil(handler)) {
-            // if it has dependencies, register
-            if (!_.isEmpty(dependencies)) {
-                this[FIELDS.engine].task(name, dependencies);
-            }
-
             return;
         }
 
         const logger = this[FIELDS.logger];
         const criteria = this[FIELDS.target];
-        const task = Runner(logger, dependencies, handler);
+        const task = Runner(logger, null, handler);
 
         this[FIELDS.engine].task(name, (complete) => {
             this[FIELDS.packages].find(criteria).then((foundPackages) => {
