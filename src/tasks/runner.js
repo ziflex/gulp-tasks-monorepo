@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import runSequence from 'run-sequence';
 import eos from 'end-of-stream';
 import consume from 'stream-consume';
 import assert from 'assert';
@@ -44,31 +43,18 @@ function execute(logger, pkg, task, done) {
     }
 }
 
-export default function create(logger, deps, handler) {
+export default function create(logger, handler) {
     required(logger, 'Logger');
     required(handler, 'handler');
     assert(_.isFunction(handler), 'Task handler must be a function');
 
-    return function taskRunner(pkg, next, done) {
+    return function taskRunner(pkg, next) {
         if (_.isNil(pkg)) {
             return next();
         }
 
         logger.info('Started processing package', pkg.name());
 
-        if (_.isEmpty(deps)) {
-            return execute(logger, pkg, handler, next);
-        }
-
-        return runSequence(
-            ...deps,
-            (err) => {
-                if (err) {
-                    return complete(logger, pkg, done, err);
-                }
-
-                return execute(logger, pkg, handler, next);
-            }
-        );
+        return execute(logger, pkg, handler, next);
     };
 }

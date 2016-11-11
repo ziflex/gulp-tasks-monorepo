@@ -100,14 +100,14 @@ describe('Tasks. Manager', () => {
             });
         });
 
-        it('should add task without handler in async mode', () => {
+        it('should add task without handler in parallel mode', () => {
             const task1 = sinon.spy();
             const task2 = sinon.spy();
             taskManager.add('task1', task1);
             taskManager.add('task2', task2);
 
             const deps = ['task1', 'task2'];
-            deps.async = true;
+            deps.parallel = true;
             taskManager.add('task3', deps);
 
             const task = _.find(gulp.getTasks(), { name: 'task3' });
@@ -116,7 +116,7 @@ describe('Tasks. Manager', () => {
             expect(task.func.length).to.eql(0);
         });
 
-        it('should add task without handler in sync mode', () => {
+        it('should add task without handler in seq mode', () => {
             const task1 = sinon.spy();
             const task2 = sinon.spy();
             taskManager.add('task1', task1);

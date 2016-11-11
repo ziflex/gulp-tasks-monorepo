@@ -72,6 +72,29 @@ function runPipeline(pipes) {
     return Promise.fromCallback(done => Pipeline.create(pipes).run(null, done));
 }
 
+function buildPackages(logger, packageManager, criteria, task, complete) {
+    packageManager.find(criteria).then((foundPackages) => {
+        const pipes = _.map(foundPackages, (pkg) => {
+            return (ignore, next, done) => {
+                task(pkg, next, done);
+            };
+        });
+
+        return runPipeline(pipes).then(() => {
+            complete();
+            logger.success('Task succeeded');
+        }).catch((reason) => {
+            complete(reason);
+
+            logger.error('Task failed');
+        });
+    }).catch((err) => {
+        logger.error('Could not find packages');
+        logger.error(err.stack);
+        return complete(err);
+    });
+}
+
 class TasksManager {
     constructor(logger, packages, options) {
         this[FIELDS.logger] = logger;
@@ -87,8 +110,8 @@ class TasksManager {
     add(...args) {
         const { name, dependencies, handler } = parseArgs(args);
 
-        // if it has dependencies, register as a separate task
-        if (!_.isEmpty(dependencies)) {
+        // looks like it's a grouping task
+        if (!_.isFunction(handler) && !_.isEmpty(dependencies)) {
             if (!dependencies.parallel) {
                 this[FIELDS.engine].task(name, (done) => {
                     runSequence(...dependencies, done);
@@ -96,38 +119,33 @@ class TasksManager {
             } else {
                 this[FIELDS.engine].task(name, dependencies);
             }
-        }
 
-        // looks like it's a grouping task
-        if (_.isNil(handler)) {
             return;
         }
 
         const logger = this[FIELDS.logger];
+        const packageManager = this[FIELDS.packages];
         const criteria = this[FIELDS.target];
-        const task = Runner(logger, null, handler);
+        const task = Runner(logger, handler);
 
         this[FIELDS.engine].task(name, (complete) => {
-            this[FIELDS.packages].find(criteria).then((foundPackages) => {
-                const pipes = _.map(foundPackages, (pkg) => {
-                    return (ignore, next, done) => {
-                        task(pkg, next, done);
-                    };
-                });
+            const onDone = (err) => {
+                if (err) {
+                    return complete(err);
+                }
 
-                return runPipeline(pipes).then(() => {
-                    complete();
-                    logger.success('Task succeeded');
-                }).catch((reason) => {
-                    complete(reason);
+                return buildPackages(logger, packageManager, criteria, task, complete);
+            };
 
-                    logger.error('Task failed');
-                });
-            }).catch((err) => {
-                logger.error('Could not find packages');
-                logger.error(err.stack);
-                return complete(err);
-            });
+            if (_.isEmpty(dependencies)) {
+                return onDone();
+            }
+
+            if (!dependencies.parallel) {
+                return runSequence(...dependencies, onDone);
+            }
+
+            return runSequence(dependencies, onDone);
         });
     }
 }
