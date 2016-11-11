@@ -1,3 +1,12 @@
+## 0.2.0
+
+### Changed
+
+* In order to force dependencies to run in parallel it needs to pu them in nested array.
+``
+  ['seq1', ['par1', 'par2'], 'seq2']
+``
+
 ## 0.1.4
 
 ### Fixed

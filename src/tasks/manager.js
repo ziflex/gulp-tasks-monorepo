@@ -6,6 +6,7 @@ import Pipeline from 'piperline';
 import runSequence from 'run-sequence';
 import Runner from './runner';
 import required from '../utils/required';
+import normalizeDependencies from '../utils/normalize-deps';
 
 const FIELDS = {
     logger: Symbol('logger'),
@@ -59,7 +60,7 @@ function parseArgs(args) {
     const result = { name, dependencies: null, handler: null };
 
     if (_.isArray(dependencies)) {
-        result.dependencies = dependencies;
+        result.dependencies = normalizeDependencies(dependencies);
         result.handler = handler;
     } else if (_.isFunction(dependencies)) {
         result.handler = dependencies;
@@ -72,7 +73,7 @@ function runPipeline(pipes) {
     return Promise.fromCallback(done => Pipeline.create(pipes).run(null, done));
 }
 
-function buildPackages(logger, packageManager, criteria, task, complete) {
+function runPackages(logger, packageManager, criteria, task, complete) {
     packageManager.find(criteria).then((foundPackages) => {
         const pipes = _.map(foundPackages, (pkg) => {
             return (ignore, next, done) => {
@@ -107,13 +108,9 @@ class TasksManager {
 
         // looks like it's a grouping task
         if (!_.isFunction(handler) && !_.isEmpty(dependencies)) {
-            if (!dependencies.parallel) {
-                this[FIELDS.engine].task(name, (done) => {
-                    runSequence(...dependencies, done);
-                });
-            } else {
-                this[FIELDS.engine].task(name, dependencies);
-            }
+            this[FIELDS.engine].task(name, (done) => {
+                runSequence(...dependencies, done);
+            });
 
             return;
         }
@@ -121,26 +118,22 @@ class TasksManager {
         const logger = this[FIELDS.logger];
         const packageManager = this[FIELDS.packages];
         const criteria = this[FIELDS.target];
-        const task = Runner(logger, handler);
+        const runner = Runner(logger, handler);
 
         this[FIELDS.engine].task(name, (complete) => {
-            const onDone = (err) => {
+            const run = (err) => {
                 if (err) {
                     return complete(err);
                 }
 
-                return buildPackages(logger, packageManager, criteria, task, complete);
+                return runPackages(logger, packageManager, criteria, runner, complete);
             };
 
             if (_.isEmpty(dependencies)) {
-                return onDone();
+                return run();
             }
 
-            if (!dependencies.parallel) {
-                return runSequence(...dependencies, onDone);
-            }
-
-            return runSequence(dependencies, onDone);
+            return runSequence(...dependencies, run);
         });
     }
 }

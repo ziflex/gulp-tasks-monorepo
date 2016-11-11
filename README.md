@@ -15,7 +15,6 @@ Tool for running gulp tasks against multiple packages
 Basic idea of the package is reusing gulp tasks for multiple projects that have similar build pipelines.
 Package iterates over a given folder with packages and run gulp tasks against each package.
 In its turn, each gulp task receives a current package metadata that contains some information about the package which can be extended via package initializers (they are covered below).    
-*Note: all dependencies are bieng executed in sequentially by default. In order to run them in parallel, array with dependencies must have ``parallel=true`` property*
 
 ## Usage
 ### Quick start
@@ -71,6 +70,25 @@ Here is our task in gulp file:
 
 As we can see, pretty much the same as with regular vanilla gulp, but with one exception - every task receives a package metadata with its name and location.
 
+#### Sequential execution flow
+
+Since the package executes all tasks in parallel, there is a way how to force it to run them sequentially.
+
+````javascript
+
+var repo = MonorepoTasks({
+    dir: path.join(__dirname, '/packages')
+});
+
+repo.task('a', function() {});
+
+repo.task('b', function() {});
+
+repo.task('c', [['a', 'b']], function() {})
+
+````
+
+It needs to put those tasks that are needed to be executed sequentially in a nested array.
 
 ### Metadata
 
