@@ -40,7 +40,7 @@ Here is our task in gulp file:
 
 ````javascript
 
-    var del = require('del');
+    var rimraf = require('rimraf');
     var path = require('path');
     var gulp = require('gulp');
     var babel = require('gulp-babel');
@@ -54,7 +54,7 @@ Here is our task in gulp file:
     repo.task('clean', function clean(pkg, done) {
         gutil.log('Cleaning', pkg.name(), 'package');
 
-        del(path.join(pkg.location(), '/dist'), done);
+        rimraf(path.join(pkg.location(), '/dist'), done);
     });
 
     repo.task('build', ['clean'], function build(pkg) {
@@ -169,11 +169,8 @@ We can use [``gulp-tasks-registrator``](https://github.com/ziflex/gulp-tasks-reg
             'gulp',
             'gulp-*',
             'gulp.*',
-            'del'
-        ],
-        rename: {
-            del: 'delete'
-        }
+            'rimraf'
+        ]
     });
 
     RegisterTasks({
@@ -196,7 +193,7 @@ We can use [``gulp-tasks-registrator``](https://github.com/ziflex/gulp-tasks-reg
 
     module.exports = function factory($) {
         return function task(pkg, done) {
-            $.del(path.join(pkg.location(), '/dist'), done);
+            $.rimraf(path.join(pkg.location(), '/dist'), done);
         };
     }
 
