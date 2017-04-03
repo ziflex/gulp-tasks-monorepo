@@ -10,7 +10,7 @@ function complete(logger, pkg, done, err) {
         return done(err);
     }
 
-    logger.success('Successfuly processed package', pkg.name());
+    logger.success('Successfully processed package', pkg.name());
     return done();
 }
 
