@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import path from 'path';
 import Gulp from '../mock/gulp';
-import Index from '../../src/index';
+import Monorepo from '../../src/index';
 
 describe('Index', () => {
     let gulp = null;
@@ -14,7 +14,8 @@ describe('Index', () => {
 
     it('should run tasks again all packages', (done) => {
         const task = sinon.spy();
-        const instance = Index({
+        const instance = Monorepo({
+            quiet: false,
             gulp,
             dir: path.resolve(__dirname, '../fixtures/packages/')
         });
@@ -29,7 +30,8 @@ describe('Index', () => {
 
     it('should run tasks again given package', (done) => {
         const task = sinon.spy();
-        const instance = Index({
+        const instance = Monorepo({
+            quiet: true,
             gulp,
             dir: path.resolve(__dirname, '../fixtures/packages/'),
             package: 'package1'
@@ -44,7 +46,8 @@ describe('Index', () => {
     });
 
     it('should use custom file init name', (done) => {
-        const instance = Index({
+        const instance = Monorepo({
+            quiet: true,
             gulp,
             dir: path.resolve(__dirname, '../fixtures/packages/'),
             file: 'custom-pattern.js'
@@ -60,8 +63,8 @@ describe('Index', () => {
     });
 
     it('should be exported as "commonjs" module', () => {
-        const Monorepo = require('../../src/index');
+        const Monorepo2 = require('../../src/index');
 
-        expect(typeof Monorepo === 'function').to.be.true;
+        expect(typeof Monorepo2 === 'function').to.be.true;
     });
 });

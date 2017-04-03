@@ -1,27 +1,42 @@
 import gutil from 'gulp-util';
 
+const DEFAULT_OUTPUT = console;
+
+function log(instance, color, ...msg) {
+    if (!instance._quiet) {
+        instance._output.log(color(...msg));
+    }
+
+    return instance;
+}
+
 class Logger {
+    constructor(params = {}) {
+        this._output = params.output || DEFAULT_OUTPUT;
+        this._quiet = params.quiet === true;
+    }
+
     log(...args) {
-        gutil.log(...args);
+        return log(this, gutil.colors.white, ...args);
     }
 
     warning(...args) {
-        gutil.log(gutil.colors.yellow(...args));
+        return log(this, gutil.colors.yellow, ...args);
     }
 
     info(...args) {
-        gutil.log(gutil.colors.magenta(...args));
+        return log(this, gutil.colors.magenta, ...args);
     }
 
     error(...args) {
-        gutil.log(gutil.colors.red(...args));
+        return log(this, gutil.colors.red, ...args);
     }
 
     success(...args) {
-        gutil.log(gutil.colors.green(...args));
+        return log(this, gutil.colors.green, ...args);
     }
 }
 
-export default function create() {
-    return new Logger();
+export default function create(params) {
+    return new Logger(params);
 }

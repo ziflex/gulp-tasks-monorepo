@@ -14,7 +14,7 @@ class Manager {
     constructor(...args) {
         const options = getOptions(...args);
 
-        this[FIELDS.logger] = Logger();
+        this[FIELDS.logger] = Logger(options.logging);
         this[FIELDS.packages] = PackageManager(
             this[FIELDS.logger],
             options.packages
