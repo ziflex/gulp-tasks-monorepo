@@ -234,7 +234,7 @@ File name for initialization module.
 Optional.    
 Default `package.js`.
 
-### options.package
+#### options.package
 Type: `string` | `array<string>`.    
 Array of string or comma-separated string that represent a package(s) to run tasks against.      
 Optional.    
@@ -243,3 +243,9 @@ Optional.
 Type: `object`.  
 Alternative gulp instance.  
 Optional.    
+
+#### options.quiet
+Type: `boolean`.    
+Turns off logging.    
+Optional.    
+Default ``false``.    
