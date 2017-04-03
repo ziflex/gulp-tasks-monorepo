@@ -1,8 +1,13 @@
+## 0.3.0
+
+### Added
+- New ``quiet`` flag which allows to turn off logging.
+
 ## 0.2.0
 
 ### Changed
 
-* In order to force dependencies to run in parallel it needs to pu them in nested array.
+* In order to force dependencies to run in parallel it needs to put them in nested array.
 ``
   ['seq1', ['par1', 'par2'], 'seq2']
 ``
