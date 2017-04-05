@@ -1,6 +1,6 @@
 {
   "name": "gulp-tasks-monorepo",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Tool for running gulp tasks against multiple packages",
   "main": "lib/index.js",
   "scripts": {
@@ -9,7 +9,8 @@
     "cover": "istanbul cover _mocha -- --compilers js:babel-register --recursive",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js  && rm -rf ./coverage",
     "clean": "rimraf lib",
-    "build": "npm run test && npm run clean && babel src --out-dir lib"
+    "build": "npm run test && npm run clean && babel src --out-dir lib",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -56,6 +57,7 @@
     "eslint-plugin-mocha": "^4",
     "istanbul": "^1.0.0-alpha",
     "mocha": "^3.1.0",
+    "rimraf": "^2.6.1",
     "sinon": "^1.17.6"
   }
 }
