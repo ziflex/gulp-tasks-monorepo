@@ -7,7 +7,7 @@ import getOptions from './options';
 const FIELDS = {
     packages: Symbol('packages'),
     tasks: Symbol('tasks'),
-    logger: Symbol('logger')
+    logger: Symbol('logger'),
 };
 
 class Manager {
@@ -17,12 +17,12 @@ class Manager {
         this[FIELDS.logger] = Logger(options.logging);
         this[FIELDS.packages] = PackageManager(
             this[FIELDS.logger],
-            options.packages
+            options.packages,
         );
         this[FIELDS.tasks] = TaskManager(
             this[FIELDS.logger],
             this[FIELDS.packages],
-            options.tasks
+            options.tasks,
         );
     }
 

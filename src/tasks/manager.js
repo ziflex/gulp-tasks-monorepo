@@ -12,7 +12,7 @@ const FIELDS = {
     logger: Symbol('logger'),
     engine: Symbol('engine'),
     packages: Symbol('packages'),
-    target: Symbol('target')
+    target: Symbol('target'),
 };
 
 function getEngine(options) {
@@ -46,7 +46,7 @@ function getTargetPackageName(options) {
         const arr = target.split(',');
 
         if (arr.length > 1) {
-            return _.map(arr, i => _.trim(i));
+            return _.map(arr, (i) => _.trim(i));
         }
 
         return _.trim(_.first(arr));
@@ -70,25 +70,30 @@ function parseArgs(args) {
 }
 
 function runPipeline(pipes) {
-    return Promise.fromCallback(done => Pipeline.create(pipes).run(null, done));
+    return Promise.fromCallback((done) =>
+        Pipeline.create(pipes).run(null, done),
+    );
 }
 
 function runPackages(logger, packageManager, criteria, task, complete) {
-    packageManager.find(criteria).then((foundPackages) => {
-        const pipes = _.map(foundPackages, (pkg) => {
-            return (ignore, next, done) => {
-                task(pkg, next, done);
-            };
-        });
+    packageManager
+        .find(criteria)
+        .then((foundPackages) => {
+            const pipes = _.map(foundPackages, (pkg) => {
+                return (ignore, next, done) => {
+                    task(pkg, next, done);
+                };
+            });
 
-        return runPipeline(pipes)
-            .then(() => complete())
-            .catch(complete);
-    }).catch((err) => {
-        logger.error('Could not find packages');
-        logger.error(err.stack);
-        return complete(err);
-    });
+            return runPipeline(pipes)
+                .then(() => complete())
+                .catch(complete);
+        })
+        .catch((err) => {
+            logger.error('Could not find packages');
+            logger.error(err.stack);
+            return complete(err);
+        });
 }
 
 class TasksManager {
@@ -126,7 +131,13 @@ class TasksManager {
                     return complete(err);
                 }
 
-                return runPackages(logger, packageManager, criteria, runner, complete);
+                return runPackages(
+                    logger,
+                    packageManager,
+                    criteria,
+                    runner,
+                    complete,
+                );
             };
 
             if (_.isEmpty(dependencies)) {

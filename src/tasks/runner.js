@@ -28,13 +28,14 @@ function execute(logger, pkg, task, done) {
         out.then(() => finish()).catch(finish);
     } else if (!_.isNil(out) && _.isFunction(out.pipe)) {
         // wait for stream to end
-        eos(out,
+        eos(
+            out,
             {
                 error: true,
                 readable: out.readable,
-                writable: out.writable && !out.readable
+                writable: out.writable && !out.readable,
             },
-            finish
+            finish,
         );
 
         consume(out);

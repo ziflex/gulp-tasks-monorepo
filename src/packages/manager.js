@@ -1,4 +1,4 @@
-/* eslint-disable global-require */
+/* eslint-disable global-require, import/no-dynamic-require */
 import Symbol from 'es6-symbol';
 import Promise from 'bluebird';
 import fs from 'fs';
@@ -14,7 +14,7 @@ const asyncGlob = Promise.promisify(glob);
 const FIELDS = {
     logger: Symbol('logger'),
     location: Symbol('location'),
-    pattern: Symbol('pattern')
+    pattern: Symbol('pattern'),
 };
 
 class PackageManager {
@@ -32,11 +32,11 @@ class PackageManager {
         return Promise.try(() => {
             const fileLocation = path.join(location, this[FIELDS.pattern]);
 
-            return Promise
-                .fromCallback(done => fs.lstat(location, done))
+            return Promise.fromCallback((done) => fs.lstat(location, done))
                 .then(() => {
-                    return Promise
-                        .fromCallback(done => fs.lstat(fileLocation, done))
+                    return Promise.fromCallback((done) =>
+                        fs.lstat(fileLocation, done),
+                    )
                         .then((stats) => {
                             return stats.isFile();
                         })
@@ -53,7 +53,7 @@ class PackageManager {
                     let initializer = null;
                     const pkg = Package({
                         name: path.basename(location),
-                        location
+                        location,
                     });
 
                     if (exists) {
@@ -72,16 +72,18 @@ class PackageManager {
                     }
 
                     if (!_.isFunction(initializer)) {
-                        const err = new Error('Initialization file must export function');
+                        const err = new Error(
+                            'Initialization file must export function',
+                        );
                         err.code = INITIALIZER_NOT_FOUND_CODE;
                         return Promise.reject(err);
                     }
 
                     // async initializer
                     if (initializer.length === 2) {
-                        return Promise
-                            .fromCallback(done => initializer(pkg, done))
-                            .then(() => pkg);
+                        return Promise.fromCallback((done) =>
+                            initializer(pkg, done),
+                        ).then(() => pkg);
                     }
 
                     initializer(pkg);
@@ -103,14 +105,16 @@ class PackageManager {
             }
 
             if (_.isFunction(criteria)) {
-                return asyncGlob(path.join(this[FIELDS.location], '/*/')).then((paths) => {
-                    return _.filter(paths, criteria);
-                });
+                return asyncGlob(path.join(this[FIELDS.location], '/*/')).then(
+                    (paths) => {
+                        return _.filter(paths, criteria);
+                    },
+                );
             }
 
             return asyncGlob(path.join(this[FIELDS.location], '/*/'));
         }).then((paths) => {
-            return Promise.map(paths, currentPath => this.get(currentPath));
+            return Promise.map(paths, (currentPath) => this.get(currentPath));
         });
     }
 }

@@ -6,7 +6,7 @@ import required from '../utils/required';
 const FIELDS = {
     name: Symbol('name'),
     location: Symbol('location'),
-    options: Symbol('options')
+    options: Symbol('options'),
 };
 
 class Package {
