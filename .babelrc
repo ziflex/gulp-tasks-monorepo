@@ -1,9 +1,12 @@
 {
     "presets": [
-      "es2015",
-      "stage-0"
-    ],
-    "plugins": [
-        "transform-node-env-inline"
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "10"
+          }
+        }
+      ]
     ]
 }
