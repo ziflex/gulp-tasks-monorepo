@@ -1,4 +1,4 @@
-import gutil from 'gulp-util';
+import chalk from 'chalk';
 
 const DEFAULT_OUTPUT = console;
 
@@ -17,23 +17,23 @@ class Logger {
     }
 
     log(...args) {
-        return log(this, gutil.colors.white, ...args);
+        return log(this, chalk.white, ...args);
     }
 
     warning(...args) {
-        return log(this, gutil.colors.yellow, ...args);
+        return log(this, chalk.yellow, ...args);
     }
 
     info(...args) {
-        return log(this, gutil.colors.magenta, ...args);
+        return log(this, chalk.magenta, ...args);
     }
 
     error(...args) {
-        return log(this, gutil.colors.red, ...args);
+        return log(this, chalk.red, ...args);
     }
 
     success(...args) {
-        return log(this, gutil.colors.green, ...args);
+        return log(this, chalk.green, ...args);
     }
 }
 
