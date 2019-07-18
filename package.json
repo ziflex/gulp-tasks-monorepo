@@ -6,7 +6,7 @@
     "scripts": {
         "lint": "eslint -c ./.eslintrc.json src",
         "test": "npm run lint && cross-env NODE_ENV=test mocha",
-        "cover": "istanbul cover _mocha -- --compilers js:babel-register --recursive",
+        "cover": "istanbul cover _mocha -- --require @babel/register --recursive",
         "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js  && rm -rf ./coverage",
         "clean": "rimraf lib",
         "build": "npm run test && npm run clean && babel src --out-dir lib",
