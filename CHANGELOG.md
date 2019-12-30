@@ -1,3 +1,10 @@
+## 0.5.0
+
+### Changed
+
+-   Updated dependencies
+-   Requires Node.js 8
+
 ## 0.4.0
 
 ### Changed
