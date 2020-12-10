@@ -4,6 +4,7 @@ import path from 'path';
 export default function getOptions(params) {
     const options = {
         logging: {
+            output: _.get(params, 'logger'),
             quiet: _.get(params, 'quiet', false),
         },
         packages: {
