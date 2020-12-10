@@ -1,5 +1,4 @@
 /* eslint-disable global-require, import/no-dynamic-require */
-import Symbol from 'es6-symbol';
 import Promise from 'bluebird';
 import fs from 'fs';
 import path from 'path';

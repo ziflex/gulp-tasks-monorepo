@@ -1,5 +1,4 @@
 /* eslint-disable global-require */
-import Symbol from 'es6-symbol';
 import _ from 'lodash';
 import required from '../utils/required';
 
