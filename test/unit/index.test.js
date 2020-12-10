@@ -17,7 +17,7 @@ describe('Index', () => {
         const instance = Monorepo({
             quiet: false,
             gulp,
-            dir: path.resolve(__dirname, '../fixtures/packages/')
+            dir: path.resolve(__dirname, '../fixtures/packages/'),
         });
 
         instance.task('build', task);
@@ -34,7 +34,7 @@ describe('Index', () => {
             quiet: true,
             gulp,
             dir: path.resolve(__dirname, '../fixtures/packages/'),
-            package: 'package1'
+            package: 'package1',
         });
 
         instance.task('build', task);
@@ -45,12 +45,34 @@ describe('Index', () => {
         });
     });
 
+    it('should use a custom logger', (done) => {
+        const task = sinon.spy();
+        const log = sinon.spy();
+        const instance = Monorepo({
+            quiet: false,
+            logger: {
+                log,
+            },
+            gulp,
+            dir: path.resolve(__dirname, '../fixtures/packages/'),
+            package: 'package1',
+        });
+
+        instance.task('build', task);
+
+        gulp.getTasks()[0].func(() => {
+            expect(log.called).to.be.true;
+
+            done();
+        });
+    });
+
     it('should use custom file init name', (done) => {
         const instance = Monorepo({
             quiet: true,
             gulp,
             dir: path.resolve(__dirname, '../fixtures/packages/'),
-            file: 'custom-pattern.js'
+            file: 'custom-pattern.js',
         });
 
         instance.task('build', (pkg) => {
