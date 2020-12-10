@@ -1,5 +1,4 @@
 /* eslint-disable global-require */
-import Symbol from 'es6-symbol';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import Pipeline from 'piperline';

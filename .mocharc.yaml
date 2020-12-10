@@ -1,0 +1,6 @@
+reporter: 'spec'
+require:
+    - '@babel/register'
+    - 'source-map-support/register'
+recursive: true
+spec: './test/**/*.test.js'

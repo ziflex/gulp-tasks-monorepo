@@ -1,4 +1,3 @@
-import Symbol from 'es6-symbol';
 import PackageManager from './packages/manager';
 import TaskManager from './tasks/manager';
 import Logger from './logger';
